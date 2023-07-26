@@ -7,7 +7,7 @@ function renderComponent() {
     full_name: "facebook/react",
     language: "Javascript",
     description: "test description",
-    owner: "c0demonkey",
+    owner: { login: "c0demonkey" },
     name: "react",
     html_url: "https://github.com/test-user/test-repo",
   };
@@ -27,7 +27,7 @@ test("shows a link to the github repo", async () => {
   await screen.findByRole("img", { name: "Javascript" });
 
   const link = screen.getByRole("link", {
-    name: /github repository/i
+    name: /github repository/i,
   });
   expect(link).toHaveAttribute("href", repository.html_url);
 });
@@ -38,4 +38,16 @@ test("shows a file icon with the appropriate icon", async () => {
   const icon = await screen.findByRole("img", { name: "Javascript" });
 
   expect(icon).toHaveClass("js-icon");
-})
+});
+
+test("shows a link to the code editor page", async () => {
+  const { repository } = renderComponent();
+
+  await screen.findByRole("img", { name: "Javascript" });
+
+  const link = screen.getByRole("link", {
+    name: new RegExp(repository.owner.login)
+  })
+
+  expect(link).toHaveAttribute("href", `/repositories/${repository.full_name}`);
+});
